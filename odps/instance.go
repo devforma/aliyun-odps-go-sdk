@@ -19,13 +19,14 @@ package odps
 import (
 	"encoding/json"
 	"encoding/xml"
-	"github.com/aliyun/aliyun-odps-go-sdk/odps/common"
-	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/aliyun/aliyun-odps-go-sdk/odps/common"
+	"github.com/pkg/errors"
 )
 
 type InstanceStatus int
@@ -190,6 +191,38 @@ func (instance *Instance) GetTaskDetail(taskName string) ([]byte, error) {
 	})
 
 	return body, errors.WithStack(err)
+}
+
+func (instance *Instance) GetTaskSummaryFull(taskName string) (*TaskSummary, error) {
+	queryArgs := make(url.Values, 2)
+	queryArgs.Set("summary", "")
+	queryArgs.Set("taskname", taskName)
+
+	client := instance.odpsIns.restClient
+	type ResModel struct {
+		MapReduce struct {
+			JsonSummary string
+			Summary     string
+		}
+	}
+
+	var resModel ResModel
+
+	err := client.GetWithParseFunc(instance.resourceUrl, queryArgs, func(res *http.Response) error {
+		decoder := json.NewDecoder(res.Body)
+		return errors.WithStack(decoder.Decode(&resModel))
+	})
+
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	taskSummary := TaskSummary{
+		JsonSummary: resModel.MapReduce.JsonSummary,
+		Summary:     resModel.MapReduce.Summary,
+	}
+
+	return &taskSummary, errors.WithStack(err)
 }
 
 func (instance *Instance) GetTaskSummary(taskName string) (*TaskSummary, error) {
