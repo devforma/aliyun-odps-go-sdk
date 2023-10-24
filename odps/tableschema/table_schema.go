@@ -247,7 +247,7 @@ func (schema *TableSchema) ToExternalSQLString(
 	// https://help.aliyun.com/zh/maxcompute/user-guide/create-an-oss-external-table
 	handler := strings.ToLower(schema.StorageHandler)
 	if handler == "parquet" || handler == "textfile" || handler == "orc" { // 目前只支持parquet、textfile、orc格式
-		builder.WriteString(fmt.Sprintf("\nstored as '%s'\n", schema.StorageHandler))
+		builder.WriteString(fmt.Sprintf("\nstored as %s\n", schema.StorageHandler))
 	} else {
 		builder.WriteString(fmt.Sprintf("\nstored by '%s'\n", schema.StorageHandler))
 	}
