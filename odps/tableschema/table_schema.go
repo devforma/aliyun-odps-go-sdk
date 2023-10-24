@@ -19,11 +19,12 @@ package tableschema
 import (
 	"bytes"
 	"fmt"
+	"strings"
+	"text/template"
+
 	"github.com/aliyun/aliyun-odps-go-sdk/arrow"
 	"github.com/aliyun/aliyun-odps-go-sdk/odps/common"
 	"github.com/pkg/errors"
-	"strings"
-	"text/template"
 )
 
 type TableSchema struct {
@@ -242,8 +243,14 @@ func (schema *TableSchema) ToExternalSQLString(
 	var builder strings.Builder
 	builder.WriteString(baseSql)
 
-	// stored by, 用于指定自定义格式StorageHandler的类名或其他外部表文件格式
-	builder.WriteString(fmt.Sprintf("\nstored by '%s'\n", schema.StorageHandler))
+	// store as 和 store by 区别
+	// https://help.aliyun.com/zh/maxcompute/user-guide/create-an-oss-external-table
+	handler := strings.ToUpper(schema.StorageHandler)
+	if handler == "parquet" || handler == "textfile" || handler == "orc" { // 目前只支持parquet、textfile、orc格式
+		builder.WriteString(fmt.Sprintf("\nstored as '%s'\n", schema.StorageHandler))
+	} else {
+		builder.WriteString(fmt.Sprintf("\nstored by '%s'\n", schema.StorageHandler))
+	}
 
 	// serde properties, 序列化属性参数
 	if len(serdeProperties) > 0 {
