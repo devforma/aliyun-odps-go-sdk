@@ -17,11 +17,12 @@
 package odps
 
 import (
+	"time"
+
 	account2 "github.com/aliyun/aliyun-odps-go-sdk/odps/account"
 	"github.com/aliyun/aliyun-odps-go-sdk/odps/common"
 	"github.com/aliyun/aliyun-odps-go-sdk/odps/restclient"
 	"github.com/pkg/errors"
-	"time"
 )
 
 type Odps struct {
@@ -92,6 +93,14 @@ func (odps *Odps) Tables() Tables {
 
 func (odps *Odps) Table(name string) Table {
 	return NewTable(odps, odps.DefaultProjectName(), name)
+}
+
+func (odps *Odps) Resources() Resources {
+	return NewResources(odps)
+}
+
+func (odps *Odps) Functions() Functions {
+	return NewFunctions(odps)
 }
 
 func (odps *Odps) Instances() Instances {

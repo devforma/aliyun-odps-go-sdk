@@ -62,6 +62,9 @@ const (
 	HttpHeaderOdpsSlotNum           = "odps-tunnel-slot-num"
 	HttpHeaderRoutedServer          = "odps-tunnel-routed-server"
 	HttpHeaderTransferEncoding      = "Transfer-Encoding"
+	HttpHeaderOdpsResourceType      = "x-odps-resource-type"
+	HttpHeaderOdpsResourceName      = "x-odps-resource-name"
+	HttpHeaderOdpsComment           = "x-odps-comment"
 
 	XMLContentType = "application/xml"
 )

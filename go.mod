@@ -20,6 +20,6 @@ require (
 )
 
 replace (
-    golang.org/x/net => golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd
-    golang.org/x/sys => golang.org/x/sys v0.0.0-20220412211240-33da011f77ad
+	golang.org/x/net => golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd
+	golang.org/x/sys => golang.org/x/sys v0.0.0-20220412211240-33da011f77ad
 )
