@@ -50,7 +50,7 @@ func (fns *Functions) CreateFunction(name string, classType string, resources []
 		Resources: FunctionResourceModel{ResourceName: resources},
 	}
 
-	return errors.WithStack(client.DoXmlWithParseFunc(common.HttpMethod.PostMethod, rb.Functions(), nil, &f, func(res *http.Response) error {
+	return errors.WithStack(client.DoXmlWithParseFunc(common.HttpMethod.PostMethod, rb.Functions(), nil, nil, &f, func(res *http.Response) error {
 		if res.StatusCode != http.StatusCreated {
 			return errors.WithStack(errors.New(res.Status))
 		}
@@ -70,7 +70,7 @@ func (fns *Functions) UpdateFunction(name string, classType string, resources []
 		Resources: FunctionResourceModel{ResourceName: resources},
 	}
 
-	return errors.WithStack(client.DoXmlWithParseFunc(common.HttpMethod.PutMethod, rb.Function(name), nil, &f, func(res *http.Response) error {
+	return errors.WithStack(client.DoXmlWithParseFunc(common.HttpMethod.PutMethod, rb.Function(name), nil, nil, &f, func(res *http.Response) error {
 		if res.StatusCode != http.StatusOK {
 			return errors.WithStack(errors.New(res.Status))
 		}
