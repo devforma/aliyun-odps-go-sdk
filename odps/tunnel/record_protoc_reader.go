@@ -53,7 +53,7 @@ func (r *RecordProtocReader) HttpRes() *http.Response {
 }
 
 func (r *RecordProtocReader) Read() (data.Record, error) {
-	record := data.NewRecord(len(r.columns))
+	record := make([]data.Data, len(r.columns))
 
 LOOP:
 	for {
@@ -129,14 +129,12 @@ LOOP:
 func (r *RecordProtocReader) Iterator(f func(record data.Record, err error)) {
 	for {
 		record, err := r.Read()
+
 		isEOF := errors.Is(err, io.EOF)
 		if isEOF {
 			return
 		}
-		if err != nil {
-			f(record, err)
-			return
-		}
+
 		f(record, err)
 	}
 }
@@ -320,6 +318,13 @@ func (r *RecordProtocReader) readField(dt datatype.DataType) (data.Data, error) 
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
+	case datatype.JSON:
+		v, err := r.protocReader.ReadBytes()
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		r.recordCrc.Update(v)
+		fieldValue = data.NewJson(string(v))
 	}
 
 	return fieldValue, nil
